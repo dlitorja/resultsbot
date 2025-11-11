@@ -5,69 +5,66 @@
 
 /**
  * Job role keywords to search for
- * Focused on non-technical roles in creator economy
+ * Focused on non-technical roles in creator economy, gaming, and tech
  */
 export const JOB_KEYWORDS = [
-  // Partnerships
-  'partnerships manager',
-  'partner manager',
-  'partnership coordinator',
-  'strategic partnerships',
-  
-  // Business Development
-  'business development',
-  'BD manager',
-  'growth manager',
-  'business development manager',
-  
-  // Community
-  'community manager',
-  'community lead',
-  'discord manager',
-  'social media manager',
-  'community coordinator',
-  
-  // Marketing
-  'marketing manager',
-  'content marketing',
-  'brand manager',
-  'influencer marketing',
-  'marketing coordinator',
-  'digital marketing',
-  
-  // Operations
-  'operations manager',
-  'project manager',
-  'ops coordinator',
-  'operations coordinator',
-  'program manager',
-  
-  // Talent Management & Influencer Relations
-  'talent manager',
-  'talent coordinator',
-  'influencer manager',
-  'creator manager',
+  // Creator Economy Specific
+  'creator partnerships',
   'creator relations',
-  'talent relations',
-  'artist manager',
-  'roster manager',
+  'creator manager',
+  'influencer manager',
+  'influencer relations',
+  'talent manager gaming',
+  'talent manager entertainment',
+  'talent coordinator creator',
   
-  // Content Strategy
-  'content strategy',
-  'content strategist',
-  'content lead',
-  'content director',
-  'editorial strategy',
-  'content operations',
+  // Gaming Industry
+  'community manager gaming',
+  'community manager game',
+  'esports manager',
+  'esports coordinator',
+  'gaming partnerships',
+  'game studio operations',
   
-  // YouTube & Video Management
+  // Content & YouTube
   'youtube manager',
-  'channel manager',
-  'video producer',
-  'video operations',
-  'youtube producer',
-  'channel producer',
+  'youtube partnerships',
+  'content creator manager',
   'video content manager',
+  'channel manager',
+  'twitch partnerships',
+  
+  // Discord & Platform Community
+  'discord community manager',
+  'discord manager',
+  'community lead gaming',
+  'platform community manager',
+  
+  // Marketing (Creator Economy)
+  'influencer marketing',
+  'creator marketing',
+  'gaming marketing',
+  'content marketing gaming',
+  'social media gaming',
+  
+  // Business Development (Tech/Gaming)
+  'partnerships manager tech',
+  'partnerships manager gaming',
+  'partnerships manager entertainment',
+  'business development gaming',
+  'BD manager gaming',
+  'growth manager gaming',
+  
+  // Operations (Entertainment/Gaming)
+  'operations manager gaming',
+  'operations manager entertainment',
+  'project manager gaming',
+  'program manager creator',
+  
+  // Broader Tech Terms (less specific)
+  'community manager tech',
+  'social media manager tech',
+  'content strategist tech',
 ];
 
 /**
@@ -221,6 +218,47 @@ export function isPriorityCompany(companyName: string): boolean {
     PRIORITY_COMPANIES.some(company => normalized.includes(company)) ||
     PRIORITY_GAME_STUDIOS.some(studio => normalized.includes(studio))
   );
+}
+
+/**
+ * Industries to exclude (not relevant to creator economy)
+ */
+const EXCLUDED_INDUSTRIES = [
+  'healthcare',
+  'health care',
+  'hospital',
+  'medical',
+  'pharmaceutical',
+  'pharma',
+  'clinic',
+  'medicine',
+  'patient',
+  'doctor',
+  'nursing',
+  'dental',
+  'insurance',
+  'finance',
+  'financial services',
+  'banking',
+  'accounting',
+  'real estate',
+  'construction',
+  'manufacturing',
+  'automotive',
+  'retail',
+  'restaurant',
+  'food service',
+  'hospitality',
+  'hotel',
+];
+
+/**
+ * Check if a job should be filtered out (not creator economy related)
+ */
+export function shouldExcludeJob(title: string, company: string, description: string): boolean {
+  const searchText = `${title} ${company} ${description}`.toLowerCase();
+  
+  return EXCLUDED_INDUSTRIES.some(industry => searchText.includes(industry));
 }
 
 /**

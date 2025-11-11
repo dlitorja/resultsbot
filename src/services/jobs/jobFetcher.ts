@@ -2,7 +2,7 @@ import { env } from '../../config/env.js';
 import { logger } from '../../utils/logger.js';
 import { redis } from '../cache/redis.js';
 import { AdzunaResponse, MuseResponse, FormattedJob, JobSearchCriteria } from './types.js';
-import { JOB_KEYWORDS, getJobPriority } from './constants.js';
+import { JOB_KEYWORDS, getJobPriority, shouldExcludeJob } from './constants.js';
 
 /**
  * Job fetcher service
@@ -250,9 +250,18 @@ export async function fetchNewJobs(criteria?: Partial<JobSearchCriteria>): Promi
     museJobs: allJobs.filter(j => j.source === 'themuse').length,
   }, 'Fetched all jobs from all sources');
 
+  // Filter out non-creator economy jobs (healthcare, finance, etc.)
+  const relevantJobs = allJobs.filter(job => !shouldExcludeJob(job.title, job.company, job.description));
+  
+  logger.info({ 
+    beforeFilter: allJobs.length,
+    afterFilter: relevantJobs.length,
+    filtered: allJobs.length - relevantJobs.length,
+  }, 'Filtered out non-creator economy jobs');
+
   // Deduplicate by job ID
   const uniqueJobs = Array.from(
-    new Map(allJobs.map(job => [job.id, job])).values()
+    new Map(relevantJobs.map(job => [job.id, job])).values()
   );
 
   logger.info({ uniqueJobs: uniqueJobs.length }, 'Deduplicated jobs');
