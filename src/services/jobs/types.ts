@@ -32,6 +32,37 @@ export interface AdzunaResponse {
   mean?: number;
 }
 
+export interface MuseJob {
+  id: number;
+  name: string;
+  company: {
+    name: string;
+    id: number;
+  };
+  locations: Array<{
+    name: string;
+  }>;
+  contents: string;
+  refs: {
+    landing_page: string;
+  };
+  publication_date: string;
+  levels?: Array<{
+    name: string;
+    short_name: string;
+  }>;
+  categories?: Array<{
+    name: string;
+  }>;
+}
+
+export interface MuseResponse {
+  results: MuseJob[];
+  page_count: number;
+  page: number;
+  item_count: number;
+}
+
 export interface FormattedJob {
   id: string;
   title: string;
@@ -42,7 +73,7 @@ export interface FormattedJob {
   salary?: string;
   posted: Date;
   priority: 'high' | 'medium' | 'low';
-  source: 'adzuna' | 'creatorjobs';
+  source: 'adzuna' | 'themuse';
 }
 
 export interface JobSearchCriteria {

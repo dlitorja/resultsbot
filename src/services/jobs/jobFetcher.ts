@@ -1,15 +1,16 @@
 import { env } from '../../config/env.js';
 import { logger } from '../../utils/logger.js';
 import { redis } from '../cache/redis.js';
-import { AdzunaResponse, FormattedJob, JobSearchCriteria } from './types.js';
+import { AdzunaResponse, MuseResponse, FormattedJob, JobSearchCriteria } from './types.js';
 import { JOB_KEYWORDS, getJobPriority } from './constants.js';
 
 /**
  * Job fetcher service
- * Fetches jobs from Adzuna API and formats them
+ * Fetches jobs from Adzuna API and The Muse API and formats them
  */
 
 const ADZUNA_BASE_URL = 'https://api.adzuna.com/v1/api/jobs/us/search/1';
+const THEMUSE_BASE_URL = 'https://www.themuse.com/api/public/jobs';
 const REDIS_JOB_PREFIX = 'job:posted:';
 const JOB_CACHE_TTL = 60 * 60 * 24 * 30; // 30 days
 
@@ -30,7 +31,7 @@ async function fetchAdzunaJobs(keyword: string, maxAge = 7): Promise<FormattedJo
       app_id: appId,
       app_key: appKey,
       what: keyword,
-      where: 'remote', // Focus on remote jobs
+      where: 'united states', // Broadened from 'remote' only
       max_days_old: maxAge.toString(),
       results_per_page: '10',
       sort_by: 'date', // Most recent first
@@ -69,6 +70,75 @@ async function fetchAdzunaJobs(keyword: string, maxAge = 7): Promise<FormattedJo
     });
   } catch (error) {
     logger.error({ error, keyword }, 'Failed to fetch jobs from Adzuna');
+    return [];
+  }
+}
+
+/**
+ * Fetch jobs from The Muse API
+ */
+async function fetchMuseJobs(keyword: string, maxAge = 30): Promise<FormattedJob[]> {
+  const apiKey = env.THEMUSE_API_KEY;
+
+  if (!apiKey) {
+    logger.debug('The Muse API key not configured');
+    return [];
+  }
+
+  try {
+    // Calculate date threshold for filtering
+    const dateThreshold = new Date();
+    dateThreshold.setDate(dateThreshold.getDate() - maxAge);
+
+    const params = new URLSearchParams({
+      api_key: apiKey,
+      page: '0',
+      descending: 'true',
+    });
+
+    // The Muse doesn't have great keyword search, so we'll fetch recent jobs
+    // and filter by keyword ourselves
+    const url = `${THEMUSE_BASE_URL}?${params.toString()}`;
+    
+    logger.debug({ keyword, url: THEMUSE_BASE_URL }, 'Fetching jobs from The Muse');
+    
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`The Muse API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = (await response.json()) as MuseResponse;
+
+    logger.info({ keyword, count: data.results.length }, 'Fetched jobs from The Muse');
+
+    // Filter by keyword and date, then format
+    return data.results
+      .filter(job => {
+        const jobDate = new Date(job.publication_date);
+        const matchesDate = jobDate >= dateThreshold;
+        const matchesKeyword = 
+          job.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.contents.toLowerCase().includes(keyword.toLowerCase()) ||
+          (job.categories && job.categories.some(c => c.name.toLowerCase().includes(keyword.toLowerCase())));
+        return matchesDate && matchesKeyword;
+      })
+      .map(job => {
+        return {
+          id: `themuse-${job.id}`,
+          title: job.name,
+          company: job.company.name,
+          location: job.locations.map(l => l.name).join(', ') || 'Not specified',
+          description: stripHtml(job.contents),
+          url: job.refs.landing_page,
+          salary: undefined, // The Muse doesn't provide salary in API
+          posted: new Date(job.publication_date),
+          priority: getJobPriority(job.company.name),
+          source: 'themuse' as const,
+        };
+      });
+  } catch (error) {
+    logger.error({ error, keyword }, 'Failed to fetch jobs from The Muse');
     return [];
   }
 }
@@ -157,19 +227,28 @@ async function markJobAsPosted(jobId: string): Promise<void> {
  */
 export async function fetchNewJobs(criteria?: Partial<JobSearchCriteria>): Promise<FormattedJob[]> {
   const keywords = criteria?.keywords || JOB_KEYWORDS;
-  const maxAge = criteria?.maxAge || 7;
+  const maxAge = criteria?.maxAge || 30; // Extended to 30 days for better results
 
-  logger.info({ keywordCount: keywords.length, maxAge }, 'Starting job fetch');
+  logger.info({ keywordCount: keywords.length, maxAge }, 'Starting job fetch from multiple sources');
 
   const allJobs: FormattedJob[] = [];
 
-  // Fetch jobs for each keyword
+  // Fetch jobs for each keyword from all sources
   for (const keyword of keywords) {
-    const jobs = await fetchAdzunaJobs(keyword, maxAge);
-    allJobs.push(...jobs);
+    // Fetch from Adzuna
+    const adzunaJobs = await fetchAdzunaJobs(keyword, maxAge);
+    allJobs.push(...adzunaJobs);
+
+    // Fetch from The Muse
+    const museJobs = await fetchMuseJobs(keyword, maxAge);
+    allJobs.push(...museJobs);
   }
 
-  logger.info({ totalJobs: allJobs.length }, 'Fetched all jobs');
+  logger.info({ 
+    totalJobs: allJobs.length,
+    adzunaJobs: allJobs.filter(j => j.source === 'adzuna').length,
+    museJobs: allJobs.filter(j => j.source === 'themuse').length,
+  }, 'Fetched all jobs from all sources');
 
   // Deduplicate by job ID
   const uniqueJobs = Array.from(

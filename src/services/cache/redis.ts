@@ -115,6 +115,14 @@ class RedisClient {
     const result = await this.exists(key);
     return result === 1;
   }
+
+  /**
+   * Get all keys matching a pattern
+   */
+  async keys(pattern: string): Promise<string[]> {
+    const result = await this.execute<string[]>(['KEYS', pattern]);
+    return result || [];
+  }
 }
 
 export const redis = new RedisClient();

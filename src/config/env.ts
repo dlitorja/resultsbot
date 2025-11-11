@@ -31,6 +31,9 @@ const envSchema = z.object({
   ADZUNA_APP_KEY: z.string().optional(),
   JOB_CHANNEL_ID: z.string().optional(),
 
+  // Job Posting - The Muse API
+  THEMUSE_API_KEY: z.string().optional(),
+
   // User IDs for specific features
   SAM_USER_ID: z.string().optional(),
   JORDAN_USER_ID: z.string().optional(),
