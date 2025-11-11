@@ -1,0 +1,386 @@
+{
+  "dashboard": {
+    "title": "Resultsbot Monitoring",
+    "tags": ["discord", "bot", "resultsbot"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Bot Uptime",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "time() - process_start_time_seconds{job=\"resultsbot\"}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "red"},
+                {"value": 3600, "color": "yellow"},
+                {"value": 86400, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Total Commands Executed",
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(resultsbot_commands_total{status=\"success\"})",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "Jobs Posted Today",
+        "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "increase(resultsbot_jobs_posted_total[24h])",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "red"},
+                {"value": 1, "color": "yellow"},
+                {"value": 5, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Birthdays Celebrated",
+        "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "resultsbot_birthdays_celebrated_total",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": "graph",
+        "title": "Commands Executed (Rate)",
+        "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(resultsbot_commands_total{status=\"success\"}[5m])",
+            "legendFormat": "{{command_name}}",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(resultsbot_commands_total{status=\"error\"}[5m])",
+            "legendFormat": "{{command_name}} (errors)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "type": "graph",
+        "title": "Command Execution Duration",
+        "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(resultsbot_command_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 - {{command_name}}",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(resultsbot_command_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50 - {{command_name}}",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "type": "graph",
+        "title": "Memory Usage",
+        "gridPos": {"x": 0, "y": 12, "w": 8, "h": 8},
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes{job=\"resultsbot\"}",
+            "legendFormat": "Resident Memory",
+            "refId": "A"
+          },
+          {
+            "expr": "nodejs_heap_size_used_bytes{job=\"resultsbot\"}",
+            "legendFormat": "Heap Used",
+            "refId": "B"
+          },
+          {
+            "expr": "nodejs_heap_size_total_bytes{job=\"resultsbot\"}",
+            "legendFormat": "Heap Total",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "type": "graph",
+        "title": "CPU Usage",
+        "gridPos": {"x": 8, "y": 12, "w": 8, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(process_cpu_seconds_total{job=\"resultsbot\"}[5m]) * 100",
+            "legendFormat": "CPU Usage",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": "graph",
+        "title": "Discord API Latency",
+        "gridPos": {"x": 16, "y": 12, "w": 8, "h": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(resultsbot_discord_api_latency_ms_bucket[5m]))",
+            "legendFormat": "p95 Latency",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(resultsbot_discord_api_latency_ms_bucket[5m]))",
+            "legendFormat": "p50 Latency",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "type": "graph",
+        "title": "Redis Operations",
+        "gridPos": {"x": 0, "y": 20, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(resultsbot_redis_operations_total{status=\"success\"}[5m])",
+            "legendFormat": "{{operation}} (success)",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(resultsbot_redis_operations_total{status=\"error\"}[5m])",
+            "legendFormat": "{{operation}} (error)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops"
+          }
+        }
+      },
+      {
+        "id": 11,
+        "type": "graph",
+        "title": "Database Query Duration",
+        "gridPos": {"x": 12, "y": 20, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(resultsbot_db_query_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 - {{query_type}}",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(resultsbot_db_query_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50 - {{query_type}}",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 12,
+        "type": "stat",
+        "title": "Random Tags Sent (This Month)",
+        "gridPos": {"x": 0, "y": 28, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "increase(resultsbot_random_tags_total[30d])",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 13,
+        "type": "table",
+        "title": "Command Errors (Last 24h)",
+        "gridPos": {"x": 6, "y": 28, "w": 18, "h": 8},
+        "targets": [
+          {
+            "expr": "increase(resultsbot_commands_total{status=\"error\"}[24h])",
+            "refId": "A",
+            "format": "table"
+          }
+        ],
+        "options": {
+          "showHeader": true
+        }
+      },
+      {
+        "id": 14,
+        "type": "graph",
+        "title": "Event Loop Lag",
+        "gridPos": {"x": 0, "y": 36, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "nodejs_eventloop_lag_seconds{job=\"resultsbot\"}",
+            "legendFormat": "Event Loop Lag",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "green"},
+                {"value": 0.1, "color": "yellow"},
+                {"value": 0.5, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 15,
+        "type": "graph",
+        "title": "Active Handles & Requests",
+        "gridPos": {"x": 12, "y": 36, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "nodejs_active_handles_total{job=\"resultsbot\"}",
+            "legendFormat": "Active Handles",
+            "refId": "A"
+          },
+          {
+            "expr": "nodejs_active_requests_total{job=\"resultsbot\"}",
+            "legendFormat": "Active Requests",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      }
+    ],
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": [
+        {
+          "datasource": "Prometheus",
+          "enable": true,
+          "iconColor": "rgba(255, 96, 96, 1)",
+          "name": "Deployments",
+          "expr": "changes(process_start_time_seconds{job=\"resultsbot\"}[5m]) > 0"
+        }
+      ]
+    }
+  }
+}
+

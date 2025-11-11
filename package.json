@@ -12,11 +12,14 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:ui": "vitest --ui --coverage",
     "typecheck": "tsc --noEmit",
-    "register-commands": "tsx src/bot/registerCommands.ts"
+    "register-commands": "tsx src/bot/registerCommands.ts",
+    "ci": "npm run lint && npm run format:check && npm run typecheck && npm run test:coverage"
   },
   "keywords": [
     "discord",
@@ -49,6 +52,7 @@
     "@types/node-cron": "^3.0.11",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
+    "@vitest/coverage-v8": "^4.0.8",
     "@vitest/ui": "^4.0.8",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^9.1.0",

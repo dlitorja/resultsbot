@@ -46,6 +46,8 @@ tmp/
 # Testing
 coverage/
 .nyc_output/
+*.lcov
+.vitest-cache/
 
 # Production
 .fly/

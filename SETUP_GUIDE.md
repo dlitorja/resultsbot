@@ -4,6 +4,13 @@
 
 The project has been fully scaffolded and is ready for development. Here's what you need to do next:
 
+## 📚 Additional Guides
+
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete guide for deploying to Fly.io
+- **[MONITORING_SETUP.md](./MONITORING_SETUP.md)** - Set up Grafana dashboards, alerts, and UptimeRobot
+- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Write and run tests with examples
+- **[.env.example](./.env.example)** - Template for all environment variables
+
 ---
 
 ## 📋 Immediate Next Steps
@@ -277,9 +284,9 @@ We recommend implementing features in this order:
 3. ✅ Toxic command (DONE)
 4. ✅ Random tagger (DONE)
 5. ✅ Job posting service (DONE)
-6. 🔲 Set up monitoring dashboards
-7. 🔲 Write tests
-8. 🔲 Deploy to production
+6. ✅ Set up monitoring dashboards (DONE - see MONITORING_SETUP.md)
+7. ✅ Write tests (DONE - see TESTING_GUIDE.md)
+8. ⚠️ Deploy to production (READY - see DEPLOYMENT_GUIDE.md)
 9. 🔲 Link summarization (future)
 
 ---

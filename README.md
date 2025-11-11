@@ -28,6 +28,14 @@ A fun Discord bot with both serious and joke features, built with modern technol
 
 ## 🚀 Getting Started
 
+### 📚 Documentation
+
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete setup instructions for local development
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deploy to Fly.io production
+- **[MONITORING_SETUP.md](./MONITORING_SETUP.md)** - Set up Grafana, Prometheus, and UptimeRobot
+- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Comprehensive testing guide with examples
+- **[.env.example](./.env.example)** - All environment variables explained
+
 ### Prerequisites
 
 - Node.js 18+
@@ -141,46 +149,31 @@ resultsbot/
 
 ## 🚢 Deployment
 
-### Deploying to Fly.io
+### Quick Start
 
-1. **Install Fly CLI**
-   ```bash
-   curl -L https://fly.io/install.sh | sh
-   ```
+```bash
+# Install Fly CLI
+curl -L https://fly.io/install.sh | sh  # macOS/Linux
+# or
+powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"  # Windows
 
-2. **Login to Fly.io**
-   ```bash
-   fly auth login
-   ```
+# Login and deploy
+fly auth login
+fly launch
+fly secrets set DISCORD_TOKEN="..." SUPABASE_URL="..." # ... all secrets
+fly deploy
+```
 
-3. **Create a new app**
-   ```bash
-   fly launch
-   ```
+### Complete Guide
 
-4. **Set environment secrets**
-   ```bash
-   fly secrets set DISCORD_TOKEN="your_token"
-   fly secrets set DISCORD_CLIENT_ID="your_client_id"
-   fly secrets set DISCORD_GUILD_ID="your_guild_id"
-   fly secrets set SUPABASE_URL="your_supabase_url"
-   fly secrets set SUPABASE_KEY="your_supabase_key"
-   fly secrets set UPSTASH_REDIS_URL="your_redis_url"
-   fly secrets set UPSTASH_REDIS_TOKEN="your_redis_token"
-   # Add other secrets as needed
-   ```
-
-5. **Deploy**
-   ```bash
-   fly deploy
-   ```
-
-### GitHub Actions (Auto-deployment)
-
-The project includes GitHub Actions for automatic deployment:
-
-1. Add `FLY_API_TOKEN` to your repository secrets
-2. Push to `main` branch to trigger deployment
+See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for detailed instructions including:
+- Full setup walkthrough with screenshots
+- Setting all environment secrets
+- GitHub Actions for auto-deployment
+- Troubleshooting common issues
+- Monitoring and scaling
+- Cost optimization tips
+- Security best practices
 
 ## 🔧 Configuration
 
@@ -200,43 +193,65 @@ All configuration is done via environment variables. See `.env.example` for a co
 
 ## 📊 Monitoring
 
-### Prometheus Metrics
+The bot includes comprehensive observability with Prometheus metrics, Grafana dashboards, and error tracking.
 
-The bot exposes Prometheus metrics on port 9090 (configurable):
+### Quick Overview
 
-- Command execution counts and duration
-- Job postings shared
-- Birthdays celebrated
-- Random tags sent
-- Redis operations
-- Database query duration
+- **Metrics Endpoint:** `http://localhost:9090/metrics` (or your Fly.io URL)
+- **Metrics Tracked:**
+  - Command execution counts and duration
+  - Job postings shared
+  - Birthdays celebrated
+  - Random tags sent
+  - Redis operations
+  - Database query duration
+  - System resources (CPU, memory, event loop)
 
-Access metrics at: `http://localhost:9090/metrics`
+### Full Setup
 
-### Grafana Dashboards
-
-Connect Grafana Cloud to your Prometheus endpoint to visualize:
-- Bot uptime and health
-- Command usage patterns
-- Error rates
-- System resources
-
-### Sentry Error Tracking
-
-Errors are automatically reported to Sentry (if configured) for debugging.
+See **[MONITORING_SETUP.md](./MONITORING_SETUP.md)** for complete instructions on:
+- Setting up Grafana Cloud with pre-built dashboards
+- Configuring alerts for critical issues
+- Setting up UptimeRobot for availability monitoring
+- Connecting Sentry for error tracking
+- Useful PromQL queries for troubleshooting
 
 ## 🧪 Testing
+
+The project includes comprehensive tests for all commands, services, and cron jobs.
+
+### Quick Start
 
 ```bash
 # Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
 
 # Run tests with UI
 npm run test:ui
 
 # Run tests with coverage
 npm run test:coverage
+
+# Run full CI check (lint + format + typecheck + coverage)
+npm run ci
 ```
+
+### Test Coverage
+
+- ✅ **Commands** - `/toxic`, `/addbirthday`, `/listbirthdays`, `/testjobs`
+- ✅ **Services** - Job fetcher, formatter, constants
+- ✅ **Cron Jobs** - Birthday checker, random tagger
+- ✅ **Mocks** - Discord.js, Supabase, Redis
+
+See **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** for detailed information on:
+- Writing tests
+- Using mocks
+- Debugging tests
+- Best practices
+- Coverage reports
 
 ## 🤝 Contributing
 
