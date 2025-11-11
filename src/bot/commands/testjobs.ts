@@ -21,7 +21,7 @@ export default {
       await triggerJobPosting();
       
       await interaction.editReply('✅ Job posting triggered! Check the job channel.');
-    } catch (error) {
+    } catch {
       await interaction.editReply('❌ Failed to trigger job posting. Check logs for details.');
     }
   },

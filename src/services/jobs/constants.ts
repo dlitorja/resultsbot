@@ -41,6 +41,33 @@ export const JOB_KEYWORDS = [
   'ops coordinator',
   'operations coordinator',
   'program manager',
+  
+  // Talent Management & Influencer Relations
+  'talent manager',
+  'talent coordinator',
+  'influencer manager',
+  'creator manager',
+  'creator relations',
+  'talent relations',
+  'artist manager',
+  'roster manager',
+  
+  // Content Strategy
+  'content strategy',
+  'content strategist',
+  'content lead',
+  'content director',
+  'editorial strategy',
+  'content operations',
+  
+  // YouTube & Video Management
+  'youtube manager',
+  'channel manager',
+  'video producer',
+  'video operations',
+  'youtube producer',
+  'channel producer',
+  'video content manager',
 ];
 
 /**
@@ -74,7 +101,7 @@ export const PRIORITY_COMPANIES = [
   'roblox',
   'unity',
   
-  // Creator Economy
+  // Creator Economy Platforms
   'patreon',
   'substack',
   'medium',
@@ -86,6 +113,48 @@ export const PRIORITY_COMPANIES = [
   'gumroad',
   'memberful',
   'ghost',
+  
+  // Talent Management & Creator Networks
+  'night media',
+  'loaded',
+  'maverick',
+  'big frame',
+  'studio71',
+  'collab',
+  'jellysmack',
+  'spotter',
+  'semaphore',
+  'underscore talent',
+  'viral nation',
+  'amp studios',
+  
+  // YouTuber Companies & Creator Brands
+  'mrbeast',
+  'beast philanthropy',
+  'feastables',
+  'dude perfect',
+  'mythical',
+  'mythical entertainment',
+  'good mythical morning',
+  'smosh',
+  'rooster teeth',
+  'dropout',
+  'collegehumor',
+  'watcher',
+  'watcher entertainment',
+  'corridor',
+  'corridor digital',
+  'nebula',
+  'curiosity stream',
+  'veritasium',
+  'linus media group',
+  'linus tech tips',
+  'offlinetv',
+  'otv',
+  'otk',
+  'one true king',
+  'optic gaming',
+  'ghost gaming',
 ];
 
 /**
@@ -143,6 +212,7 @@ export const PRIORITY_GAME_STUDIOS = [
 
 /**
  * Check if a company should be prioritized
+ * Includes: Big tech, creator platforms, talent agencies, YouTuber companies, and game studios
  */
 export function isPriorityCompany(companyName: string): boolean {
   const normalized = companyName.toLowerCase().trim();
