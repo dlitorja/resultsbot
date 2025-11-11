@@ -1,0 +1,29 @@
+# Grafana Agent configuration for Resultsbot
+# Scrapes local Prometheus metrics and pushes to Grafana Cloud
+
+server:
+  log_level: info
+
+metrics:
+  global:
+    scrape_interval: 30s
+    external_labels:
+      environment: production
+      app: resultsbot
+    
+    remote_write:
+      - url: ${GRAFANA_PROMETHEUS_URL}
+        basic_auth:
+          username: ${GRAFANA_PROMETHEUS_USERNAME}
+          password: ${GRAFANA_CLOUD_API_KEY}
+
+  configs:
+    - name: resultsbot
+      scrape_configs:
+        - job_name: resultsbot
+          static_configs:
+            - targets: ['localhost:9090']
+              labels:
+                job: resultsbot
+                instance: resultsbot-flyio
+

@@ -38,6 +38,11 @@ const envSchema = z.object({
   // Environment
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 
+  // Grafana Cloud (for metrics forwarding)
+  GRAFANA_PROMETHEUS_URL: z.string().url().optional(),
+  GRAFANA_PROMETHEUS_USERNAME: z.string().optional(),
+  GRAFANA_CLOUD_API_KEY: z.string().optional(),
+
   // Optional
   PROMETHEUS_PORT: z.string().default('9090'),
   DEFAULT_TIMEZONE: z.string().default('America/Chicago'),
