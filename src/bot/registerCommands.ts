@@ -17,11 +17,18 @@ async function registerCommands() {
 
     const commands = [];
     const commandsPath = join(__dirname, 'commands');
-    const commandFiles = (await readdir(commandsPath)).filter((file) => file.endsWith('.ts'));
+    const allFiles = await readdir(commandsPath);
+    
+    // Load .js files (compiled) or .ts files (dev mode), but not .d.ts or .map files
+    const commandFiles = allFiles.filter((file) => 
+      (file.endsWith('.js') || file.endsWith('.ts')) && 
+      !file.endsWith('.d.ts') && 
+      !file.endsWith('.map')
+    );
 
     // Load all command definitions
     for (const file of commandFiles) {
-      const filePath = join(commandsPath, file);
+      const filePath = `file://${join(commandsPath, file)}`;
       const command = await import(filePath);
 
       if ('data' in command.default) {
