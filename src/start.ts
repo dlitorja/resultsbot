@@ -23,7 +23,22 @@ async function main() {
 
     logger.info('✅ All systems operational!');
   } catch (error) {
-    logger.error({ error }, 'Failed to start application');
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error({ 
+      error,
+      errorMessage,
+      errorCode: (error as any)?.code,
+      stack: error instanceof Error ? error.stack : undefined 
+    }, 'Failed to start application');
+    
+    // Log helpful debugging info
+    logger.error('Debug info:');
+    logger.error(`  - Node version: ${process.version}`);
+    logger.error(`  - Environment: ${env.NODE_ENV}`);
+    logger.error(`  - Discord token length: ${env.DISCORD_TOKEN?.length || 0}`);
+    logger.error(`  - Client ID: ${env.DISCORD_CLIENT_ID ? 'SET' : 'MISSING'}`);
+    logger.error(`  - Guild ID: ${env.DISCORD_GUILD_ID ? 'SET' : 'MISSING'}`);
+    
     process.exit(1);
   }
 }

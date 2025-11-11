@@ -118,11 +118,27 @@ export async function startBot() {
 
     logDiscordEvent('bot_started');
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode = (error as any)?.code;
+    const errorStatus = (error as any)?.status;
+    
     logger.error({ 
       error, 
-      message: error instanceof Error ? error.message : String(error),
+      errorMessage,
+      errorCode,
+      errorStatus,
       stack: error instanceof Error ? error.stack : undefined 
     }, 'Failed to start bot');
+    
+    // Provide helpful error messages
+    if (errorMessage.includes('disallowed intents')) {
+      logger.error('⚠️  REQUIRED: Enable Privileged Gateway Intents in Discord Developer Portal');
+      logger.error('   → https://discord.com/developers/applications');
+      logger.error('   → Select your application → Bot → Enable MESSAGE CONTENT and SERVER MEMBERS intents');
+    } else if (errorMessage.includes('token') || errorMessage.includes('auth')) {
+      logger.error('⚠️  Check your DISCORD_TOKEN - it may be invalid or expired');
+    }
+    
     if (env.SENTRY_DSN) {
       Sentry.captureException(error);
     }
