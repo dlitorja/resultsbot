@@ -123,9 +123,17 @@ function stripHtml(html: string): string {
 
 /**
  * Check if job has already been posted
+ * Returns true if job exists OR if Redis has an error (to prevent duplicate posts during outages)
  */
 async function isJobPosted(jobId: string): Promise<boolean> {
   const exists = await redis.exists(`${REDIS_JOB_PREFIX}${jobId}`);
+  
+  // Handle Redis errors: treat as "already posted" to prevent duplicates during outages
+  if (exists === null) {
+    logger.warn({ jobId }, 'Redis error checking if job was posted - treating as already posted');
+    return true;
+  }
+  
   return exists === 1;
 }
 
@@ -133,11 +141,15 @@ async function isJobPosted(jobId: string): Promise<boolean> {
  * Mark job as posted
  */
 async function markJobAsPosted(jobId: string): Promise<void> {
-  await redis.set(
+  const result = await redis.set(
     `${REDIS_JOB_PREFIX}${jobId}`,
     new Date().toISOString(),
     JOB_CACHE_TTL
   );
+  
+  if (result === null) {
+    logger.error({ jobId }, 'Failed to mark job as posted in Redis');
+  }
 }
 
 /**
