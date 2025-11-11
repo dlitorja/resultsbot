@@ -59,4 +59,43 @@ Replace third-party birthday bot with custom solution.
 
 ---
 
+## 📐 Code Quality & Best Practices
+
+### **Staying Current with Technology**
+
+**Critical Principle:** Always use modern, non-deprecated APIs and patterns.
+
+#### Guidelines:
+- **Before implementing:** Check official documentation for deprecation warnings
+- **Prefer modern alternatives:** Use current, recommended approaches over legacy methods
+- **Monitor updates:** Keep dependencies up-to-date with non-breaking changes
+- **Plan for deprecations:** When a feature is marked "soon-to-be deprecated," migrate proactively
+
+#### Examples of Modern Practices We Follow:
+- ✅ **ES Modules** (`import/export`) instead of CommonJS (`require`)
+- ✅ **Native Fetch API** (Node 18+) instead of `node-fetch` library
+- ✅ **Discord.js v14 interactions** instead of message commands
+- ✅ **Slash commands** (modern) instead of prefix commands (legacy)
+- ✅ **TypeScript's modern syntax** following latest stable features
+- ✅ **Luxon** instead of deprecated Moment.js
+- ✅ **Vitest** (modern) instead of older testing frameworks
+
+#### Deprecation Monitoring:
+- Check release notes when updating packages
+- Review Discord.js changelogs for API changes
+- Follow Node.js LTS schedule
+- Subscribe to library deprecation notices
+- Use `npm outdated` regularly to check for updates
+
+#### When in Doubt:
+1. Check official documentation first
+2. Look for "Recommended" or "Best Practice" sections
+3. Review recent GitHub issues/discussions
+4. Choose the approach that will be maintained long-term
+5. Document why a particular approach was chosen
+
+**Goal:** Build a codebase that remains maintainable and modern for years, not just today.
+
+---
+
 *See full plan in repository documentation*

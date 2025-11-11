@@ -259,6 +259,7 @@ Contributions are welcome! This is an open-source learning project.
 - Update `.env.example` if adding new environment variables
 - Document complex logic with comments
 - **Never commit secrets** - use `.env.local`
+- **Use modern, non-deprecated APIs** - Always check for deprecation warnings and use current best practices (see PROJECT_PLAN.md for details)
 
 ## 📄 License
 
