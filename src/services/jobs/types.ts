@@ -63,6 +63,25 @@ export interface MuseResponse {
   item_count: number;
 }
 
+export interface RemotiveJob {
+  id: number;
+  title: string;
+  company_name: string;
+  company_logo?: string;
+  category: string;
+  job_type: string;
+  publication_date: string;
+  candidate_required_location: string;
+  salary?: string;
+  description: string;
+  url: string;
+  tags: string[];
+}
+
+export interface RemotiveResponse {
+  jobs: RemotiveJob[];
+}
+
 export interface FormattedJob {
   id: string;
   title: string;
@@ -73,7 +92,7 @@ export interface FormattedJob {
   salary?: string;
   posted: Date;
   priority: 'high' | 'medium' | 'low';
-  source: 'adzuna' | 'themuse';
+  source: 'adzuna' | 'themuse' | 'remotive';
 }
 
 export interface JobSearchCriteria {
