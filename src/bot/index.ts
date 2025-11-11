@@ -118,7 +118,11 @@ export async function startBot() {
 
     logDiscordEvent('bot_started');
   } catch (error) {
-    logger.error({ error }, 'Failed to start bot');
+    logger.error({ 
+      error, 
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined 
+    }, 'Failed to start bot');
     if (env.SENTRY_DSN) {
       Sentry.captureException(error);
     }
