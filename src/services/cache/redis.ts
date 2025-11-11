@@ -30,7 +30,7 @@ class RedisClient {
         },
       });
 
-      const data: RedisResponse<T> = await response.json();
+      const data = (await response.json()) as RedisResponse<T>;
 
       if (data.error) {
         throw new Error(data.error);

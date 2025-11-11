@@ -1,5 +1,6 @@
 import client from 'prom-client';
 import { env } from '../config/env.js';
+import { logger } from './logger.js';
 
 /**
  * Prometheus metrics for monitoring bot performance
@@ -125,7 +126,7 @@ if (env.PROMETHEUS_PORT) {
     });
 
     server.listen(port, () => {
-      console.log(`📊 Metrics server listening on port ${port}`);
+      logger.info(`📊 Metrics server listening on port ${port}`);
     });
   });
 }

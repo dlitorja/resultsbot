@@ -25,12 +25,14 @@ async function checkRandomTag() {
     const currentMonth = DateTime.now().toFormat('yyyy-MM');
 
     // Get or create monthly tag tracking
-    let { data: tagData, error } = await supabase
+    const { data, error } = await supabase
       .from('random_tags')
       .select('*')
       .eq('user_id', jordanUserId)
       .eq('month', currentMonth)
       .single();
+    
+    let tagData = data;
 
     if (error && error.code !== 'PGRST116') {
       // PGRST116 = no rows
