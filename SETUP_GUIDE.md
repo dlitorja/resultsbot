@@ -80,7 +80,8 @@ notepad .env.local  # or use your preferred editor
 
 **Optional:**
 - `SENTRY_DSN` - For error tracking
-- `JOB_API_KEY` - When you set up job posting API
+- `ADZUNA_APP_ID` - For job posting (get from developer.adzuna.com)
+- `ADZUNA_APP_KEY` - For job posting (get from developer.adzuna.com)
 
 ### 4. Register Slash Commands
 
@@ -114,6 +115,7 @@ Try these commands in your Discord server:
 1. `/toxic` - Should tag Sam (if SAM_USER_ID is set)
 2. `/addbirthday @user 1990-05-15` - Add a birthday (admin only)
 3. `/listbirthdays` - Show upcoming birthdays
+4. `/testjobs` - Manually trigger job posting (admin only, for testing)
 
 ---
 
@@ -274,7 +276,7 @@ We recommend implementing features in this order:
 2. ✅ Birthday system (DONE)
 3. ✅ Toxic command (DONE)
 4. ✅ Random tagger (DONE)
-5. 🔲 Job posting service
+5. ✅ Job posting service (DONE)
 6. 🔲 Set up monitoring dashboards
 7. 🔲 Write tests
 8. 🔲 Deploy to production

@@ -26,8 +26,9 @@ const envSchema = z.object({
   // Monitoring
   SENTRY_DSN: z.string().url('Sentry DSN must be valid').optional(),
 
-  // Job Posting
-  JOB_API_KEY: z.string().optional(),
+  // Job Posting - Adzuna API
+  ADZUNA_APP_ID: z.string().optional(),
+  ADZUNA_APP_KEY: z.string().optional(),
   JOB_CHANNEL_ID: z.string().optional(),
 
   // User IDs for specific features

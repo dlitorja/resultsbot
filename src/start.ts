@@ -1,6 +1,7 @@
 import { startBot } from './bot/index.js';
 import { startBirthdayChecker } from './bot/jobs/birthdayChecker.js';
 import { startRandomTagger } from './bot/jobs/randomTagger.js';
+import { startJobPoster } from './bot/jobs/jobPoster.js';
 import { logger } from './utils/logger.js';
 import { env } from './config/env.js';
 
@@ -18,6 +19,7 @@ async function main() {
     // Start cron jobs
     startBirthdayChecker();
     startRandomTagger();
+    startJobPoster();
 
     logger.info('✅ All systems operational!');
   } catch (error) {
