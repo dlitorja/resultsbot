@@ -40,7 +40,7 @@ const envSchema = z.object({
 
   // Optional
   PROMETHEUS_PORT: z.string().default('9090'),
-  DEFAULT_TIMEZONE: z.string().default('America/Los_Angeles'),
+  DEFAULT_TIMEZONE: z.string().default('America/Chicago'),
 });
 
 export type Env = z.infer<typeof envSchema>;
