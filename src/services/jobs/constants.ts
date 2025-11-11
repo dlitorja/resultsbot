@@ -6,65 +6,37 @@
 /**
  * Job role keywords to search for
  * Focused on non-technical roles in creator economy, gaming, and tech
+ * Optimized for speed - reduced to most effective keywords
  */
 export const JOB_KEYWORDS = [
   // Creator Economy Specific
   'creator partnerships',
-  'creator relations',
   'creator manager',
   'influencer manager',
-  'influencer relations',
   'talent manager gaming',
-  'talent manager entertainment',
-  'talent coordinator creator',
   
   // Gaming Industry
   'community manager gaming',
-  'community manager game',
   'esports manager',
-  'esports coordinator',
   'gaming partnerships',
-  'game studio operations',
   
   // Content & YouTube
   'youtube manager',
-  'youtube partnerships',
   'content creator manager',
-  'video content manager',
-  'channel manager',
   'twitch partnerships',
   
-  // Discord & Platform Community
-  'discord community manager',
+  // Discord & Platform
   'discord manager',
-  'community lead gaming',
   'platform community manager',
   
   // Marketing (Creator Economy)
   'influencer marketing',
   'creator marketing',
   'gaming marketing',
-  'content marketing gaming',
-  'social media gaming',
   
-  // Business Development (Tech/Gaming)
-  'partnerships manager tech',
+  // Business Development
   'partnerships manager gaming',
-  'partnerships manager entertainment',
   'business development gaming',
-  'BD manager gaming',
-  'growth manager gaming',
-  
-  // Operations (Entertainment/Gaming)
-  'operations manager gaming',
-  'operations manager entertainment',
-  'project manager gaming',
-  'program manager creator',
-  
-  // Broader Tech Terms (less specific)
-  'community manager tech',
-  'social media manager tech',
-  'content strategist tech',
 ];
 
 /**

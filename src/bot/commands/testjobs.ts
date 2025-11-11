@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 import { triggerJobPosting } from '../jobs/jobPoster.js';
+import { logger } from '../../utils/logger.js';
 
 /**
  * Test command to manually trigger job posting
@@ -13,17 +14,15 @@ export default {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.reply({ 
+      content: '🔄 Job posting started! This may take 1-2 minutes. Check the job channel shortly.',
+      ephemeral: true 
+    });
 
-    try {
-      await interaction.editReply('🔄 Fetching jobs...');
-      
-      await triggerJobPosting();
-      
-      await interaction.editReply('✅ Job posting triggered! Check the job channel.');
-    } catch {
-      await interaction.editReply('❌ Failed to trigger job posting. Check logs for details.');
-    }
+    // Fire and forget - don't wait for completion to avoid Discord timeout
+    triggerJobPosting().catch(error => {
+      logger.error({ error }, 'Job posting failed after command was acknowledged');
+    });
   },
 };
 
